@@ -6,13 +6,13 @@ from get_updates import get_updates
 def main():
     offset = 0
     while True:
-        updates = get_updates(offset)
-        if "result" in updates:
-            for update in updates["result"]:
-                offset = update["update_id"] + 1
-                if "message" in update and "chat" in update["message"] and "text" in update["message"]:
-                    chat_id = update["message"]["chat"]["id"]
-                    text = update["message"]["text"]
+        updates_message = get_updates(offset)
+        if "result" in updates_message:
+            for message in updates_message["result"]:
+                offset = message["update_id"] + 1
+                if "message" in message and "text" in message["message"]:
+                    chat_id = message["message"]["chat"]["id"]
+                    text = message["message"]["text"]
                     if text == "/start":
                         get_start(chat_id)
                         continue
