@@ -1,6 +1,7 @@
 from get_start import get_start
 from respond import respond
 from get_updates import get_updates
+from add_database import add_database
 
 
 def main():
@@ -17,11 +18,11 @@ def main():
                 continue
             chat_id = message["message"]["chat"]["id"]
             text = message["message"]["text"]
-
+            name = message["message"]["from"]["username"]
             if message["message"]["text"] == "/start":
                 get_start(chat_id)
                 continue
-            respond(chat_id, text)
+            respond(chat_id, text, name)
 
 
 if __name__ == "__main__":
