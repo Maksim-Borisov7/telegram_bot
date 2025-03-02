@@ -21,6 +21,7 @@ def main():
             name = message["message"]["from"]["username"]
             if message["message"]["text"] == "/start":
                 get_start(chat_id)
+                add_database(name)
                 continue
             respond(chat_id, text, name)
 
