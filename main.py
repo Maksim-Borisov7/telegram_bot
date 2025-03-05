@@ -2,6 +2,9 @@ from get_start import get_start
 from respond import respond
 from get_updates import get_updates
 from add_database import add_database
+from get_translated import get_translated
+import requests
+from config import BOT_URL
 
 
 def main():
@@ -10,11 +13,15 @@ def main():
         updates_message = get_updates(offset)
         if "result" not in updates_message:
             continue
-
         for message in updates_message["result"]:
             offset = message["update_id"] + 1
-
-            if "message" not in message and "text" not in message["message"]:
+            if 'callback_query' in message:
+                chat_id = message['callback_query']["message"]["chat"]["id"]
+                params = {"chat_id": chat_id, "text": "Введите текст для перевода:"}
+                requests.post(BOT_URL + "sendMessage", params=params)
+                get_translated(offset)
+                continue
+            if "message" not in message or "text" not in message["message"]:
                 continue
             chat_id = message["message"]["chat"]["id"]
             text = message["message"]["text"]
@@ -23,8 +30,10 @@ def main():
                 get_start(chat_id)
                 add_database(name)
                 continue
+
             respond(chat_id, text, name)
 
 
 if __name__ == "__main__":
     main()
+

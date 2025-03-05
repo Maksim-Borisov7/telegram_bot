@@ -4,11 +4,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-botToken = os.getenv('botToken')
-botURL = os.getenv('botURL')
+BOT_TOKEN = os.getenv('BOT_TOKEN')
+BOT_URL = os.getenv('BOT_URL')
 
-host = os.getenv("host")
-user = os.getenv("user")
-password = os.getenv("password")
-db_name = os.getenv("db_name")
-port = os.getenv("port")
+HOST = os.getenv("HOST")
+USER = os.getenv("USER")
+PASSWORD = os.getenv("PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+PORT = os.getenv("PORT")
+en_chars = 'abcdefghijklmnopqrstuvwxyz'
+API_TRANSLATED = "https://api.mymemory.translated.net/get?q={text}&langpair={en}|{ru}"

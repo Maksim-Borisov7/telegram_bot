@@ -1,16 +1,16 @@
 import psycopg2
-from config import host, user, password, db_name, port
+from config import HOST, USER, PASSWORD, DB_NAME, PORT
 
 
 def add_database(nickname):
     connection = None
     try:
         connection = psycopg2.connect(
-            host=host,
-            user=user,
-            password=password,
-            database=db_name,
-            port=port
+            host=HOST,
+            user=USER,
+            password=PASSWORD,
+            database=DB_NAME,
+            port=PORT
         )
         connection.autocommit = True
 

@@ -1,8 +1,21 @@
 import requests
 
-from config import botURL
+from config import BOT_URL
 
 
 def get_start(chat_id):
-    params = {"chat_id": chat_id, "text": "Приветствую тебя дорогой друг в моем телеграм боте"}
-    requests.post(botURL + "sendMessage", params=params)
+    keyboard = {
+        "inline_keyboard": [
+            [
+                {"text": "Переводчик RUS|EN:", "callback_data": "get_translated"},
+            ]
+        ]
+    }
+    params = {"chat_id": chat_id,
+              "text": "Пожалуйста, выберите кнопку ниже:",
+              "reply_markup": keyboard
+              }
+    requests.post(BOT_URL + "sendMessage", json=params)
+
+
+
