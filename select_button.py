@@ -3,7 +3,7 @@ import requests
 from config import BOT_URL
 
 
-def get_start(chat_id):
+def select_button(chat_id):
     keyboard = {
         "inline_keyboard": [
             [

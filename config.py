@@ -12,5 +12,5 @@ USER = os.getenv("USER")
 PASSWORD = os.getenv("PASSWORD")
 DB_NAME = os.getenv("DB_NAME")
 PORT = os.getenv("PORT")
-en_chars = 'abcdefghijklmnopqrstuvwxyz'
+EN_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 API_TRANSLATED = "https://api.mymemory.translated.net/get?q={text}&langpair={en}|{ru}"

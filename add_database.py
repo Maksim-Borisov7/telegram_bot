@@ -1,5 +1,10 @@
 import psycopg2
 from config import HOST, USER, PASSWORD, DB_NAME, PORT
+import logging
+
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def add_database(nickname):
@@ -25,18 +30,18 @@ def add_database(nickname):
                     SET count_message = count_message + 1
                     WHERE name = '{nickname}'"""
                 )
-                print("Увеличили счетчик сообщений")
+                logging.info("Увеличили счетчик сообщений")
             else:
                 cursor.execute(
                     f"""INSERT INTO users_count (name, count_message) VALUES
                     ('{nickname}', 1);"""
                 )
-                print("Добавлен новый пользователь")
+                logging.info("Добавлен новый пользователь")
 
     except Exception as ex:
-        print("Не удалось подключиться к серверу:", ex)
+        raise logging.critical("Не удалось подключиться к БД:", ex)
 
     finally:
         if connection:
             connection.close()
-            print("PostgreSQL connection closed")
+            logging.info("PostgreSQL connection closed")

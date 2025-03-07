@@ -1,10 +1,8 @@
-from get_start import get_start
+from select_button import select_button
 from respond import respond
 from get_updates import get_updates
 from add_database import add_database
 from get_translated import get_translated
-import requests
-from config import BOT_URL
 
 
 def main():
@@ -17,9 +15,7 @@ def main():
             offset = message["update_id"] + 1
             if 'callback_query' in message:
                 chat_id = message['callback_query']["message"]["chat"]["id"]
-                params = {"chat_id": chat_id, "text": "Введите текст для перевода:"}
-                requests.post(BOT_URL + "sendMessage", params=params)
-                get_translated(offset)
+                offset = get_translated(offset, chat_id)
                 continue
             if "message" not in message or "text" not in message["message"]:
                 continue
@@ -27,7 +23,7 @@ def main():
             text = message["message"]["text"]
             name = message["message"]["from"]["username"]
             if message["message"]["text"] == "/start":
-                get_start(chat_id)
+                select_button(chat_id)
                 add_database(name)
                 continue
 
