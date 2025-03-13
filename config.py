@@ -14,3 +14,4 @@ DB_NAME = os.getenv("DB_NAME")
 PORT = os.getenv("PORT")
 EN_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 API_TRANSLATED = "https://api.mymemory.translated.net/get?q={text}&langpair={en}|{ru}"
+PG_URL = f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DB_NAME}"

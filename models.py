@@ -20,6 +20,6 @@ class CountOrm(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     count: Mapped[int]
-    fk_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"))
 
     user: Mapped["UsersOrm"] = relationship(back_populates="cnt")

@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, select, exists
-from config import USER, PASSWORD, HOST, PORT, DB_NAME
+from config import PG_URL
 from sqlalchemy.orm import sessionmaker
 from orm import insert_new_user, increase_count
 from models import UsersOrm, Base
@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-engine = create_engine(url=f"postgresql+psycopg2://{USER}:{PASSWORD}@{HOST}:{PORT}/{DB_NAME}", echo=True)
+engine = create_engine(url=PG_URL, echo=True)
 session_factory = sessionmaker(engine)
 Base.metadata.create_all(engine, checkfirst=True)
 
