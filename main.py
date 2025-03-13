@@ -1,8 +1,8 @@
 from select_button import select_button
 from respond import respond
 from get_updates import get_updates
-from add_database import add_database
 from get_translated import get_translated
+from get_all_users import get_all_users
 
 
 def main():
@@ -22,12 +22,14 @@ def main():
             chat_id = message["message"]["chat"]["id"]
             text = message["message"]["text"]
             name = message["message"]["from"]["username"]
-            if message["message"]["text"] == "/start":
-                select_button(chat_id)
-                add_database(name)
-                continue
-
-            respond(chat_id, text, name)
+            if text[0] == "/":
+                if text == "/start":
+                    select_button(chat_id)
+                    continue
+                elif text == "/all_users":
+                    get_all_users(chat_id)
+            else:
+                respond(chat_id, text, name)
 
 
 if __name__ == "__main__":
