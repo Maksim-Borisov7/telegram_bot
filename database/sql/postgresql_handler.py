@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, select, exists
 from config import PG_URL, BOT_URL
 from sqlalchemy.orm import sessionmaker, Session
-from orm import insert_new_user, increase_count
-from models import Users, Base
+from database.sql.orm import insert_new_user, increase_count
+from src.models.models import Users, Base
 import logging
 import requests
 

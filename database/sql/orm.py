@@ -1,4 +1,4 @@
-from models import Users, Counts
+from src.models.models import Users, Counts
 
 
 def insert_new_user(name, session):

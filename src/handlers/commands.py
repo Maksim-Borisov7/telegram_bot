@@ -1,4 +1,4 @@
-from postgresql import get_all_users
+from database.sql.postgresql_handler import get_all_users
 from config import BOT_URL
 import requests
 

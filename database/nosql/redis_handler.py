@@ -6,7 +6,7 @@ from config import BOT_URL, REDIS_DB, REDIS_HOST, REDIS_PORT
 r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
 
 
-def redis_repeat_message_handler(chat_id, text):
+def redis_handler(chat_id, text):
     try:
         value = r.get('text')
         if value is not None and value.decode('utf-8') == text:

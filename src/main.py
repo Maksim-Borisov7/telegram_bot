@@ -1,8 +1,8 @@
 import logging
 
-from commands import commands
-from get_translated import get_translated
-from handle_message import respond, get_updates
+from src.handlers.commands import commands
+from src.handlers.get_translated import get_translated
+from src.handlers.handle_message import respond, get_updates
 
 
 def handler(message):

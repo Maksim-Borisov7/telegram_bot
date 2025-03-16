@@ -2,8 +2,8 @@ import logging
 import requests
 
 from config import BOT_URL
-from postgresql import add_message_to_database
-from redis_repeat_message_hander import redis_repeat_message_handler
+from database.sql.postgresql_handler import add_message_to_database
+from database.nosql.redis_handler import redis_handler
 
 
 def get_updates(offset):
@@ -13,7 +13,7 @@ def get_updates(offset):
 
 
 def respond(chat_id, text, name):
-    if not redis_repeat_message_handler(chat_id, text):
+    if not redis_handler(chat_id, text):
         logging.info("Отправленное сообщение не повторяется")
 
         params = {"chat_id": chat_id, "text": text}

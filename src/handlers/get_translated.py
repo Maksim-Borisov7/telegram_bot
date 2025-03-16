@@ -1,6 +1,5 @@
 from config import EN_CHARS, API_TRANSLATED, BOT_URL
-from commands import commands
-from handle_message import get_updates, respond
+from src.handlers.handle_message import get_updates, respond
 import requests
 
 
