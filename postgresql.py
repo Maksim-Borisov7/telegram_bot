@@ -1,9 +1,11 @@
 from sqlalchemy import create_engine, select, exists
-from config import PG_URL
+from config import PG_URL, BOT_URL
 from sqlalchemy.orm import sessionmaker
 from orm import insert_new_user, increase_count
 from models import UsersOrm, Base
 import logging
+import requests
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -12,7 +14,7 @@ session_factory = sessionmaker(engine)
 Base.metadata.create_all(engine, checkfirst=True)
 
 
-def add_to_database(nickname):
+def add_message_to_database(nickname):
     try:
         query = select(exists().where(UsersOrm.name == nickname))
         with session_factory() as session:
@@ -26,6 +28,18 @@ def add_to_database(nickname):
     except Exception as ex:
         logging.critical(f"Не удалось подключиться к БД: {ex}")
         raise ex
+
+
+def get_all_users(chat_id):
+    users_all = session_factory.query(UsersOrm).all()
+    lst = []
+    for value in users_all:
+        lst.append(f"Пользователь: {value.name}; Количество сообщений: {value.cnt.count}\n")
+    params = {
+        "chat_id": chat_id,
+        "text": "".join(lst)
+    }
+    requests.post(BOT_URL + "sendMessage", params=params)
 
 
 
