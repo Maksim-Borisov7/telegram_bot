@@ -1,11 +1,11 @@
-from respond import respond
-from get_updates import get_updates
-from get_translated import get_translated
-from commands import commands
 import logging
 
+from commands import commands
+from get_translated import get_translated
+from handle_message import respond, get_updates
 
-def handle_message(message):
+
+def handler(message):
     if "update_id" not in message:
         return None
 
@@ -13,8 +13,7 @@ def handle_message(message):
 
     if 'callback_query' in message:
         chat_id = message['callback_query']["message"]["chat"]["id"]
-        get_translated(offset, chat_id)
-        return offset
+        return get_translated(offset, chat_id)
 
     if "message" not in message or "text" not in message["message"]:
         return offset
@@ -40,7 +39,7 @@ def main():
                 continue
 
             for message in updates_message["result"]:
-                new_offset = handle_message(message)
+                new_offset = handler(message)
                 if new_offset:
                     offset = new_offset
 

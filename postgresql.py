@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, select, exists
 from config import PG_URL, BOT_URL
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from orm import insert_new_user, increase_count
-from models import UsersOrm, Base
+from models import Users, Base
 import logging
 import requests
 
@@ -16,7 +16,7 @@ Base.metadata.create_all(engine, checkfirst=True)
 
 def add_message_to_database(nickname):
     try:
-        query = select(exists().where(UsersOrm.name == nickname))
+        query = select(exists().where(Users.name == nickname))
         with session_factory() as session:
             if session.execute(query).scalar():
                 increase_count(nickname, session)
@@ -31,15 +31,22 @@ def add_message_to_database(nickname):
 
 
 def get_all_users(chat_id):
-    users_all = session_factory.query(UsersOrm).all()
-    lst = []
-    for value in users_all:
-        lst.append(f"Пользователь: {value.name}; Количество сообщений: {value.cnt.count}\n")
-    params = {
-        "chat_id": chat_id,
-        "text": "".join(lst)
-    }
-    requests.post(BOT_URL + "sendMessage", params=params)
+    session_users = Session(engine)
+    try:
+        with session_users as session:
+            users_all = session.query(Users).all()
+            lst = []
+            for value in users_all:
+                lst.append(f"Пользователь: {value.name}; Количество сообщений: {value.cnt.count}\n")
+            params = {
+                "chat_id": chat_id,
+                "text": "".join(lst)
+            }
+            requests.post(BOT_URL + "sendMessage", params=params)
+    except Exception as e:
+        logging.error(f"Ошибка при получении данных из базы данных: {e}")
+        raise e
+
 
 
 

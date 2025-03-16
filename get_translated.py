@@ -1,7 +1,6 @@
-from get_updates import get_updates
-from respond import respond
 from config import EN_CHARS, API_TRANSLATED, BOT_URL
 from commands import commands
+from handle_message import get_updates, respond
 import requests
 
 
@@ -27,18 +26,19 @@ def get_translated(offset, chat_id):
             except KeyError:
                 continue
 
-            if message['message']["text"][0] == '/':
-                params = {"text": 'Введите текст для перевода:', "chat_id": message["message"]["chat"]["id"]}
-                requests.post(BOT_URL + "sendMessage", params=params)
-                continue
-
             chat_id = message["message"]["chat"]["id"]
-            text = message['message']["text"]
+            text = message["message"]["text"]
             name = message["message"]["from"]["username"]
 
-            if message['message']["text"] == '/exit':
-                commands(chat_id, text)
-                return
+            if text == '/exit':
+                params = {"text": "Переводчик отключен", "chat_id": chat_id}
+                requests.post(BOT_URL + "sendMessage", params=params)
+                return offset
+
+            if message['message']['text'][0] == '/':
+                params = {"text": "Введите текст для перевода", "chat_id": chat_id}
+                requests.post(BOT_URL + "sendMessage", params=params)
+                continue
 
             if text[0].lower() in EN_CHARS:
                 res = get_api_translated(API_TRANSLATED.format(text=text, en="en", ru="ru"))
