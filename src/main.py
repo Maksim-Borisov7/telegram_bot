@@ -35,6 +35,7 @@ def main():
     while True:
         try:
             updates_message = get_updates(offset)
+
             if "result" not in updates_message:
                 continue
 

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, select, exists
 from config import PG_URL, BOT_URL
 from sqlalchemy.orm import sessionmaker, Session
-from database.sql.orm import insert_new_user, increase_count
+from database.sql.orm import create_new_user, update_count, read_users, delete_users
 from src.models.models import Users, Base
 import logging
 import requests
@@ -19,10 +19,10 @@ def add_message_to_database(nickname):
         query = select(exists().where(Users.name == nickname))
         with session_factory() as session:
             if session.execute(query).scalar():
-                increase_count(nickname, session)
+                create_new_user(nickname, session)
                 logging.info("Увеличили счетчик сообщений")
             else:
-                insert_new_user(nickname, session)
+                update_count(nickname, session)
                 logging.info("Добавлен новый пользователь")
 
     except Exception as ex:
@@ -34,7 +34,7 @@ def get_all_users(chat_id):
     session_users = Session(engine)
     try:
         with session_users as session:
-            users_all = session.query(Users).all()
+            users_all = read_users(session)
             lst = []
             for value in users_all:
                 lst.append(f"Пользователь: {value.name}; Количество сообщений: {value.cnt.count}\n")
