@@ -21,3 +21,6 @@ def respond(chat_id, text, name):
 
         add_message_to_database(name)
 
+
+
+
