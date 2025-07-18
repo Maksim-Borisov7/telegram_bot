@@ -1,4 +1,7 @@
 SQLAlchemy~=2.0.38
-requests~=2.32.3
+requests~=2.32.4
 redis~=5.2.1
 python-dotenv~=1.0.1
+faststream~=0.5.44
+dotenv~=0.9.9
+pydantic~=2.11.4

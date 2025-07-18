@@ -1,25 +1,30 @@
 import logging
+
+import aiohttp
 import requests
 
-from config import BOT_URL
+from config import settings
 from database.sql.postgresql_handler import add_message_to_database
 from database.nosql.redis_handler import redis_handler
 
 
-def get_updates(offset):
+async def get_updates(offset):
     params = {"offset": offset}
-    response = requests.get(BOT_URL + "getUpdates", params=params)
-    return response.json()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(settings.BOT_URL + "getUpdates", params=params) as response:
+            return await response.json()
 
 
-def respond(chat_id, text, name):
-    if not redis_handler(chat_id, text):
+async def respond(chat_id, text, name):
+    if not await redis_handler(chat_id, text):
         logging.info("Отправленное сообщение не повторяется")
 
         params = {"chat_id": chat_id, "text": text}
-        requests.post(BOT_URL + "sendMessage", params=params)
+        async with aiohttp.ClientSession() as session:
+            async with session.post(settings.BOT_URL + "sendMessage", params=params) as response:
+                await response.json()
 
-        add_message_to_database(name)
+        await add_message_to_database(name)
 
 
 

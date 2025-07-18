@@ -1,19 +1,24 @@
-from config import EN_CHARS, API_TRANSLATED, BOT_URL
+import aiohttp
+
+from config import settings
 from src.handlers.handle_message import get_updates, respond
-import requests
 
 
-def get_api_translated(url):
-    response = requests.get(url)
-    for r in response.json()["matches"]:
+async def get_api_translated(url):
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as response:
+            data = await response.json()
+    for r in data["matches"]:
         return r['translation']
 
 
-def get_translated(offset, chat_id):
+async def get_translated(offset, chat_id):
     params = {"text": "Введите текст для перевода", "chat_id": chat_id}
-    requests.post(BOT_URL + "sendMessage", params=params)
+    async with aiohttp.ClientSession() as s:
+        async with s.get(settings.BOT_URL + "sendMessage", params=params) as response:
+            await response.json()
     while True:
-        updates_message = get_updates(offset)
+        updates_message = await get_updates(offset)
         if "result" not in updates_message:
             continue
 
@@ -31,19 +36,23 @@ def get_translated(offset, chat_id):
 
             if text == '/exit':
                 params = {"text": "Переводчик отключен", "chat_id": chat_id}
-                requests.post(BOT_URL + "sendMessage", params=params)
+                async with aiohttp.ClientSession() as s:
+                    async with s.get(settings.BOT_URL + "sendMessage", params=params) as response:
+                        await response.json()
                 return offset
 
             if message['message']['text'][0] == '/':
                 params = {"text": "Введите текст для перевода", "chat_id": chat_id}
-                requests.post(BOT_URL + "sendMessage", params=params)
+                async with aiohttp.ClientSession() as s:
+                    async with s.get(settings.BOT_URL + "sendMessage", params=params) as response:
+                        await response.json()
                 continue
 
-            if text[0].lower() in EN_CHARS:
-                res = get_api_translated(API_TRANSLATED.format(text=text, en="en", ru="ru"))
-                respond(chat_id, res, name)
+            if text[0].lower() in settings.EN_CHARS:
+                res = await get_api_translated(settings.API_TRANSLATED.format(text=text, en="en", ru="ru"))
+                await respond(chat_id, res, name)
             else:
-                res = get_api_translated(API_TRANSLATED.format(text=text, en="ru", ru="en"))
-                respond(chat_id, res, name)
+                res = await get_api_translated(settings.API_TRANSLATED.format(text=text, en="ru", ru="en"))
+                await respond(chat_id, res, name)
 
 

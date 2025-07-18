@@ -1,16 +1,17 @@
+import aiohttp
+
 from database.sql.postgresql_handler import get_all_users
-from config import BOT_URL
-import requests
+from config import settings
 
 
-def commands(chat_id, text):
+async def commands(chat_id, text):
     if text == "/start":
-        select_button(chat_id)
+        await select_button(chat_id)
     elif text == "/all_users":
-        get_all_users(chat_id)
+        await get_all_users(chat_id)
 
 
-def select_button(chat_id):
+async def select_button(chat_id):
     keyboard = {
         "inline_keyboard": [
             [
@@ -22,4 +23,6 @@ def select_button(chat_id):
               "text": "Пожалуйста, выберите кнопку ниже:",
               "reply_markup": keyboard
               }
-    requests.post(BOT_URL + "sendMessage", json=params)
+    async with aiohttp.ClientSession() as s:
+        async with s.post(settings.BOT_URL + "sendMessage", json=params) as response:
+            await response.json()
