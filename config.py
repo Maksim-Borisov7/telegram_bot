@@ -25,5 +25,7 @@ class Settings(BaseModel):
     REDIS_PORT: int = os.getenv("REDIS_PORT")
     REDIS_DB: int = os.getenv("REDIS_DB")
 
+    CHAT_ID: int = os.getenv('CHAT_ID')
+
 
 settings = Settings()

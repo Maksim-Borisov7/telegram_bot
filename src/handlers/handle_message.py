@@ -1,11 +1,10 @@
 import logging
-
 import aiohttp
-import requests
 
 from config import settings
 from database.sql.postgresql_handler import add_message_to_database
 from database.nosql.redis_handler import redis_handler
+from src.handlers.send_message import Dispatch
 
 
 async def get_updates(offset):
@@ -20,10 +19,7 @@ async def respond(chat_id, text, name):
         logging.info("Отправленное сообщение не повторяется")
 
         params = {"chat_id": chat_id, "text": text}
-        async with aiohttp.ClientSession() as session:
-            async with session.post(settings.BOT_URL + "sendMessage", params=params) as response:
-                await response.json()
-
+        await Dispatch.send_message_get(**params)
         await add_message_to_database(name)
 
 

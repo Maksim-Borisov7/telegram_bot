@@ -2,6 +2,7 @@ import aiohttp
 
 from config import settings
 from src.handlers.handle_message import get_updates, respond
+from src.handlers.send_message import Dispatch
 
 
 async def get_api_translated(url):
@@ -14,9 +15,7 @@ async def get_api_translated(url):
 
 async def get_translated(offset, chat_id):
     params = {"text": "Введите текст для перевода", "chat_id": chat_id}
-    async with aiohttp.ClientSession() as s:
-        async with s.get(settings.BOT_URL + "sendMessage", params=params) as response:
-            await response.json()
+    await Dispatch.send_message_post(**params)
     while True:
         updates_message = await get_updates(offset)
         if "result" not in updates_message:
@@ -36,16 +35,12 @@ async def get_translated(offset, chat_id):
 
             if text == '/exit':
                 params = {"text": "Переводчик отключен", "chat_id": chat_id}
-                async with aiohttp.ClientSession() as s:
-                    async with s.get(settings.BOT_URL + "sendMessage", params=params) as response:
-                        await response.json()
+                await Dispatch.send_message_post(**params)
                 return offset
 
             if message['message']['text'][0] == '/':
                 params = {"text": "Введите текст для перевода", "chat_id": chat_id}
-                async with aiohttp.ClientSession() as s:
-                    async with s.get(settings.BOT_URL + "sendMessage", params=params) as response:
-                        await response.json()
+                await Dispatch.send_message_post(**params)
                 continue
 
             if text[0].lower() in settings.EN_CHARS:

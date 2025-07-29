@@ -5,6 +5,8 @@ from src.handlers.commands import commands
 from src.handlers.get_translated import get_translated
 from src.handlers.handle_message import respond, get_updates
 
+from src.rabbitmq.broker import broker
+
 
 async def handler(message):
     if "update_id" not in message:
@@ -22,7 +24,6 @@ async def handler(message):
     chat_id = message["message"]["chat"]["id"]
     text = message["message"]["text"]
     name = message["message"]["from"]["username"]
-
     if text[0] == "/":
         await commands(chat_id, text)
     else:
@@ -32,6 +33,8 @@ async def handler(message):
 
 
 async def main():
+    await broker.start()
+    logging.info("broker started")
     offset = 0
     while True:
         try:
@@ -49,6 +52,8 @@ async def main():
         except Exception as e:
             logging.error(f"Ошибка в основном цикле: {e}")
             continue
+    await broker.close()
+    logging.info("broker closed")
 
 
 if __name__ == "__main__":
